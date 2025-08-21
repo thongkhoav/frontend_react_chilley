@@ -47,7 +47,7 @@ function App() {
             alignItems: "center",
           }}
         >
-          <span>{task.title}</span>
+          <span>{task?.title}</span>
           <div style={{ display: "flex", gap: "8px" }}>
             <Button
               size="small"
@@ -78,7 +78,7 @@ function App() {
       ),
       children: (
         <div>
-          <p>{task.title}</p>
+          <p>{task?.description}</p>
         </div>
       ),
     }));
@@ -89,8 +89,12 @@ function App() {
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const loadTasks = async () => {
-    const res = await getTasks();
-    setTasks(res.data || []);
+    try {
+      const res = await getTasks();
+      setTasks(res?.data || []);
+    } catch (error: any) {
+      ToastError(error?.response?.data?.message || "Failed to load tasks.");
+    }
   };
 
   // Hooks
@@ -105,7 +109,6 @@ function App() {
   };
 
   const handleCancel = () => {
-    console.log("Clicked cancel button");
     setOpen(false);
   };
 
@@ -120,16 +123,15 @@ function App() {
         title: values.title,
         description: values.description,
       };
-      console.log(values, tasks);
       const res = await addTask(reqData);
       setTasks((prevTasks) => [
-        ...prevTasks,
         {
           id: res?.data?.id,
           title: values.title,
           description: values.description,
           completed: false,
         },
+        ...prevTasks,
       ]);
 
       setOpen(false);
@@ -171,10 +173,6 @@ function App() {
     }
   };
 
-  const onChange = (key: string | string[]) => {
-    console.log(key);
-  };
-
   return (
     <Flex justify={"center"}>
       <Flex style={boxStyle} vertical={true}>
@@ -214,11 +212,7 @@ function App() {
           </Form>
         </Modal>
         {tasks?.length > 0 ? (
-          <Collapse
-            items={collapseItems}
-            defaultActiveKey={["1"]}
-            onChange={onChange}
-          />
+          <Collapse items={collapseItems} />
         ) : (
           <Typography.Text type="secondary">No tasks available</Typography.Text>
         )}

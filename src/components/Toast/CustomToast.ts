@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 
-export const ToastError = (message: string, duration: number = 4000) => {
+export const ToastError = (message: string, duration: number = 3000) => {
   toast.error(message, {
     position: "top-right",
     autoClose: duration,
@@ -12,7 +12,7 @@ export const ToastError = (message: string, duration: number = 4000) => {
   });
 };
 
-export const ToastSuccess = (message: string, duration: number = 4000) => {
+export const ToastSuccess = (message: string, duration: number = 3000) => {
   toast.success(message, {
     position: "top-right",
     autoClose: duration,
